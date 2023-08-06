@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import functions
 from django.utils.translation import gettext_lazy as _
 
+from tasks.models import Task
+
 
 class TimerManager(models.Manager):
     def get_queryset(self):
@@ -36,6 +38,10 @@ class TimerManager(models.Manager):
                     models.F("end") - models.F("start"),
                     output_field=models.DurationField(_("duration")),
                 ),
+                is_disposable=models.ExpressionWrapper(
+                    models.Q(task__isnull=True),
+                    output_field=models.BooleanField(_("is disposable")),
+                ),
             )
         )
 
@@ -44,6 +50,14 @@ class Timer(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
     set_date = models.DateField(_("set date"), null=True, blank=True)
+    task = models.ForeignKey(
+        Task,
+        models.CASCADE,
+        related_name="timers",
+        null=True,
+        blank=True,
+        verbose_name=_("task"),
+    )
 
     objects = TimerManager()
 

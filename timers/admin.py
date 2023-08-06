@@ -15,16 +15,22 @@ class IsDateSetListFilter(GeneralBooleanListFilter):
     parameter_name = "is_date_set"
 
 
+class IsDisposableListFilter(GeneralBooleanListFilter):
+    title = "is disposable"
+    parameter_name = "is_disposable"
+
+
 @admin.register(Timer)
 class TimerAdmin(admin.ModelAdmin):
     list_display = [
         "pk",
         "start",
         "date",
+        "task",
         "duration",
         "actual_date",
     ]
-    list_filter = [IsEndedListFilter, IsDateSetListFilter]
+    list_filter = [IsEndedListFilter, IsDateSetListFilter, IsDisposableListFilter]
     date_hierarchy = "start"
     exclude = []
 
