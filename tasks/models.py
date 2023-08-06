@@ -4,6 +4,20 @@ from django.utils.translation import gettext_lazy as _
 from themes.models import Theme
 
 
+class TaskManager(models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .annotate(
+                is_draft=models.ExpressionWrapper(
+                    models.Q(theme__isnull=True),
+                    output_field=models.BooleanField(_("is draft")),
+                )
+            )
+        )
+
+
 class Task(models.Model):
     name = models.CharField(
         _("name"),
@@ -20,6 +34,8 @@ class Task(models.Model):
         related_name="tasks",
         verbose_name=_("theme"),
     )
+
+    objects = TaskManager()
 
     def __str__(self):
         return self.name or str(self.wanted_duration)
