@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from themes.models import Theme
+from schedules.models import Frequency
 
 
 class TaskManager(models.Manager):
@@ -13,7 +14,11 @@ class TaskManager(models.Manager):
                 is_draft=models.ExpressionWrapper(
                     models.Q(theme__isnull=True),
                     output_field=models.BooleanField(_("is draft")),
-                )
+                ),
+                is_disposable=models.ExpressionWrapper(
+                    models.Q(frequency__isnull=True),
+                    output_field=models.BooleanField(_("is disposable")),
+                ),
             )
         )
 
@@ -33,6 +38,14 @@ class Task(models.Model):
         blank=True,
         related_name="tasks",
         verbose_name=_("theme"),
+    )
+    frequency = models.ForeignKey(
+        Frequency,
+        models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="tasks",
+        verbose_name=_("frequency"),
     )
 
     objects = TaskManager()
