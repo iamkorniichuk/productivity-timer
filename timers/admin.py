@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from commons.admin import GeneralBooleanListFilter
+from commons.utils import format_timedelta
 
 from .models import Timer
 
@@ -15,9 +16,9 @@ class IsDateSetListFilter(GeneralBooleanListFilter):
     parameter_name = "is_date_set"
 
 
-class IsDisposableListFilter(GeneralBooleanListFilter):
-    title = "is disposable"
-    parameter_name = "is_disposable"
+class IsCompletedListFilter(GeneralBooleanListFilter):
+    title = "is completed"
+    parameter_name = "is_completed"
 
 
 @admin.register(Timer)
@@ -25,20 +26,24 @@ class TimerAdmin(admin.ModelAdmin):
     list_display = [
         "pk",
         "start",
-        "date",
+        "datetime",
         "task",
         "duration",
-        "actual_date",
     ]
-    list_filter = [IsEndedListFilter, IsDateSetListFilter, IsDisposableListFilter]
+    list_filter = [
+        IsEndedListFilter,
+        IsDateSetListFilter,
+        IsCompletedListFilter,
+    ]
     date_hierarchy = "start"
     exclude = []
 
     def duration(self, obj):
-        return obj.duration
+        return format_timedelta(obj.duration)
 
-    def actual_date(self, obj):
-        return obj.actual_date
+    duration.admin_order_field = "duration"
 
-    def date(self, obj):
-        return obj.date
+    def datetime(self, obj):
+        return obj.datetime
+
+    datetime.admin_order_field = "datetime"
