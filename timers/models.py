@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import functions
 from django.utils.translation import gettext_lazy as _
 
+
 from tasks.models import Task
 
 
@@ -11,36 +12,48 @@ class TimerManager(models.Manager):
             super()
             .get_queryset()
             .annotate(
-                is_date_set=models.ExpressionWrapper(
-                    models.Q(set_date__isnull=False),
-                    output_field=models.BooleanField(_("is date set")),
-                ),
-                actual_date=models.ExpressionWrapper(
-                    models.F("start__date"),
-                    output_field=models.DateField(
-                        _("actual date"),
-                    ),
-                ),
-                date=models.ExpressionWrapper(
+                datetime=models.ExpressionWrapper(
                     functions.Coalesce(
-                        models.F("set_date"),
-                        models.F("actual_date"),
+                        models.F("set_datetime"),
+                        models.F("start"),
                     ),
-                    output_field=models.DateField(
-                        _("date"),
+                    output_field=models.DateTimeField(
+                        _("datetime"),
                     ),
-                ),
-                is_ended=models.ExpressionWrapper(
-                    models.Q(end__isnull=False),
-                    output_field=models.BooleanField(_("is ended")),
                 ),
                 duration=models.ExpressionWrapper(
                     models.F("end") - models.F("start"),
                     output_field=models.DurationField(_("duration")),
                 ),
+                is_datetime_set=models.ExpressionWrapper(
+                    models.Q(set_datetime__isnull=False),
+                    output_field=models.BooleanField(_("is datetime set")),
+                ),
+                is_going=models.ExpressionWrapper(
+                    models.Q(end__isnull=True),
+                    output_field=models.BooleanField(_("is going")),
+                ),
                 is_disposable=models.ExpressionWrapper(
                     models.Q(task__isnull=True),
                     output_field=models.BooleanField(_("is disposable")),
+                ),
+                is_completed=models.ExpressionWrapper(
+                    models.Q(duration__gte=models.F("task__wanted_duration")),
+                    output_field=models.BooleanField(_("is completed")),
+                ),
+            )
+        )
+
+
+class CurrentTimerManage(TimerManager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .filter(
+                datetime__range=(
+                    models.F("task__frequency__start"),
+                    models.F("task__frequency__end"),
                 ),
             )
         )
@@ -49,17 +62,16 @@ class TimerManager(models.Manager):
 class Timer(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
-    set_date = models.DateField(_("set date"), null=True, blank=True)
+    set_datetime = models.DateTimeField(_("set datetime"), null=True, blank=True)
     task = models.ForeignKey(
         Task,
         models.CASCADE,
         related_name="timers",
-        null=True,
-        blank=True,
         verbose_name=_("task"),
     )
 
     objects = TimerManager()
+    current_objects = CurrentTimerManage()
 
     def __str__(self):
         return str(self.start)
