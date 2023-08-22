@@ -19,6 +19,7 @@ class TaskManager(models.Manager):
                     models.Q(frequency__isnull=True),
                     output_field=models.BooleanField(_("is disposable")),
                 ),
+                # TODO: Add number of completed, started, remaining timers for current timespan
             )
         )
 
