@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import functions
 from django.utils.translation import gettext_lazy as _
 
-from .functions import StartOf, EndOf
+from commons.functions import StartOf, EndOf
 
 
 class FrequencyManager(models.Manager):
