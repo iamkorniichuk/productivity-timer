@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from commons.functions import NonAggregateCount
 
+from users.models import User
 from themes.models import Theme
 from schedules.models import Frequency
 
@@ -75,6 +76,12 @@ class Task(models.Model):
         blank=True,
         related_name="tasks",
         verbose_name=_("frequency"),
+    )
+    user = models.ForeignKey(
+        User,
+        models.CASCADE,
+        related_name="tasks",
+        verbose_name=_("user"),
     )
 
     objects = TaskManager()

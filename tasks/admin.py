@@ -15,6 +15,7 @@ class TaskAdmin(admin.ModelAdmin):
         "frequency",
         "completed_timers",
         "remaining_timers",
+        "user",
     ]
     list_filter = [
         bool_filter_factory("is_disposable", title="is disposable"),
