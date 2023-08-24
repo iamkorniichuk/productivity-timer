@@ -11,6 +11,19 @@ class TaskManager(models.Manager):
     def get_queryset(self):
         from timers.models import Timer
 
+        related_frequency = Frequency.objects.filter(
+            pk=models.OuterRef("task__frequency__pk")
+        )[:1]
+
+        related_current_completed_timers = Timer.objects.filter(
+            task=models.OuterRef("pk"),
+            is_completed=True,
+            datetime__range=[
+                models.Subquery(related_frequency.values("start")),
+                models.Subquery(related_frequency.values("end")),
+            ],
+        )
+
         return (
             super()
             .get_queryset()
@@ -25,28 +38,9 @@ class TaskManager(models.Manager):
                 ),
                 completed_timers=models.ExpressionWrapper(
                     models.Subquery(
-                        Timer.objects.filter(
-                            task=models.OuterRef("pk"),
-                            is_completed=True,
-                            datetime__range=[
-                                models.Subquery(
-                                    (
-                                        Frequency.objects.filter(
-                                            pk=models.OuterRef("task__frequency__pk")
-                                        )[:1].values("start")
-                                    ),
-                                ),
-                                models.Subquery(
-                                    (
-                                        Frequency.objects.filter(
-                                            pk=models.OuterRef("task__frequency__pk")
-                                        )[:1].values("end")
-                                    ),
-                                ),
-                            ],
-                        )
-                        .annotate(count=NonAggregateCount("pk"))
-                        .values("count")[:1]
+                        related_current_completed_timers.annotate(
+                            count=NonAggregateCount("pk")
+                        ).values("count")[:1]
                     ),
                     output_field=models.PositiveIntegerField(_("completed timers")),
                 ),
