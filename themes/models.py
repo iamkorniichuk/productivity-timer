@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from users.models import User
+
 
 class ThemeManager(models.Manager):
     def get_queryset(self):
@@ -25,6 +27,12 @@ class Theme(models.Model):
         blank=True,
         related_name="children",
         verbose_name=_("parent"),
+    )
+    user = models.ForeignKey(
+        User,
+        models.CASCADE,
+        related_name="themes",
+        verbose_name=_("user"),
     )
 
     objects = ThemeManager()
