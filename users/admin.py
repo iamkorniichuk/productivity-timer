@@ -9,3 +9,9 @@ from .models import User
 class UserAdmin(BaseUserAdmin):
     list_display = ["pk", "email", "is_staff"]
     ordering = ["email"]
+    add_fieldsets = [
+        (None, {"fields": ["email", "password1", "password2", "is_staff"]}),
+    ]
+    fieldsets = [
+        (None, {"fields": ["email", "password", "is_staff"]}),
+    ]
