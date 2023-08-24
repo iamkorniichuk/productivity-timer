@@ -1,12 +1,16 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from commons.functions import NonAggregateCount
+
 from themes.models import Theme
 from schedules.models import Frequency
 
 
 class TaskManager(models.Manager):
     def get_queryset(self):
+        from timers.models import Timer
+
         return (
             super()
             .get_queryset()
@@ -19,7 +23,37 @@ class TaskManager(models.Manager):
                     models.Q(frequency__isnull=True),
                     output_field=models.BooleanField(_("is disposable")),
                 ),
-                # TODO: Add number of completed, started, remaining timers for current timespan
+                completed_timers=models.ExpressionWrapper(
+                    models.Subquery(
+                        Timer.objects.filter(
+                            task=models.OuterRef("pk"),
+                            is_completed=True,
+                            datetime__range=[
+                                models.Subquery(
+                                    (
+                                        Frequency.objects.filter(
+                                            pk=models.OuterRef("task__frequency__pk")
+                                        )[:1].values("start")
+                                    ),
+                                ),
+                                models.Subquery(
+                                    (
+                                        Frequency.objects.filter(
+                                            pk=models.OuterRef("task__frequency__pk")
+                                        )[:1].values("end")
+                                    ),
+                                ),
+                            ],
+                        )
+                        .annotate(count=NonAggregateCount("pk"))
+                        .values("count")[:1]
+                    ),
+                    output_field=models.PositiveIntegerField(_("completed timers")),
+                ),
+                remaining_timers=models.ExpressionWrapper(
+                    models.F("frequency__events_number") - models.F("completed_timers"),
+                    output_field=models.IntegerField(_("remaining timers")),
+                ),
             )
         )
 
