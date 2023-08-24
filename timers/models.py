@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import functions
 from django.utils.translation import gettext_lazy as _
 
-
+from users.models import User
 from tasks.models import Task
 
 
@@ -68,6 +68,12 @@ class Timer(models.Model):
         models.CASCADE,
         related_name="timers",
         verbose_name=_("task"),
+    )
+    user = models.ForeignKey(
+        User,
+        models.CASCADE,
+        related_name="timers",
+        verbose_name=_("user"),
     )
 
     objects = TimerManager()

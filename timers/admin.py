@@ -14,6 +14,7 @@ class TimerAdmin(admin.ModelAdmin):
         "datetime",
         "task",
         "duration",
+        "user",
     ]
     list_filter = [
         bool_filter_factory("is_datetime_set", title="is datetime set"),
