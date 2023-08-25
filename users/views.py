@@ -29,3 +29,12 @@ class LoginView(generics.GenericAPIView):
                 "token": token,
             }
         )
+
+
+class SignUpView(LoginView):
+    serializer_class = UserSerializer
+
+    def get_user(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return serializer.create(serializer.validated_data)

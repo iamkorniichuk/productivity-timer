@@ -20,4 +20,11 @@ class LoginSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ("password",)
+        fields = ["email", "password"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def create(self, validated_data):
+        User = self.Meta.model
+        return User.objects.create_user(**validated_data)
