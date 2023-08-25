@@ -148,3 +148,5 @@ REST_FRAMEWORK = {
         "knox.auth.TokenAuthentication",
     ],
 }
+
+REST_KNOX = {"USER_SERIALIZER": "users.serializers.LoginSerializer"}
