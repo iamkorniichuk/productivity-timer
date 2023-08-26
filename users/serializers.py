@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from .models import User
+from .validators import PasswordValidator
 
 
 class LoginSerializer(serializers.Serializer):
@@ -22,7 +23,10 @@ class SignUpSerializer(serializers.ModelSerializer):
         model = User
         fields = ["email", "password"]
         extra_kwargs = {
-            "password": {"write_only": True},
+            "password": {
+                "write_only": True,
+                "validators": [PasswordValidator()],
+            },
         }
 
     def create(self, validated_data):
