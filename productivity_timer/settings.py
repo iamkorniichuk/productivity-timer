@@ -149,4 +149,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-REST_KNOX = {"USER_SERIALIZER": "users.serializers.LoginSerializer"}
+REST_KNOX = {"USER_SERIALIZER": "auth.serializers.LoginSerializer"}

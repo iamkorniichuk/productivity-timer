@@ -1,9 +1,9 @@
 from django.urls import path
 
-from .apps import UsersConfig
+from .apps import AuthConfig
 from .views import LoginView, SignUpView, LogoutView, LogoutAllView
 
-app_name = UsersConfig.name
+app_name = AuthConfig.name
 
 urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
