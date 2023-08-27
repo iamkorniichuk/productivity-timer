@@ -17,4 +17,5 @@ class TaskSerializer(serializers.ModelSerializer):
             "is_disposable",
             "completed_timers",
             "remaining_timers",
+            "user",
         ]

@@ -19,4 +19,5 @@ class TimerSerializer(serializers.ModelSerializer):
             "is_ended",
             "duration",
             "is_completed",
+            "user",
         ]
