@@ -9,6 +9,10 @@ from schedules.models import Frequency
 
 
 class TaskManager(models.Manager):
+    def create(self, **kwargs):
+        instance = super().create(**kwargs)
+        return self.get_queryset().get(pk=instance.pk)
+
     def get_queryset(self):
         from timers.models import Timer
 
