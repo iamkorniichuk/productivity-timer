@@ -4,10 +4,11 @@ from .serializers import TaskSerializer
 from .models import Task
 
 
-# TODO: Return after create serialized data
 class TaskList(generics.ListCreateAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -15,4 +16,6 @@ class TaskList(generics.ListCreateAPIView):
 
 class TaskDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
+
+    def get_queryset(self):
+        return Task.objects.filter(user=self.request.user)

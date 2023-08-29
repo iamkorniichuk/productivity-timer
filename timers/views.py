@@ -6,7 +6,9 @@ from .models import Timer
 
 class TimerList(generics.ListCreateAPIView):
     serializer_class = TimerSerializer
-    queryset = Timer.objects.all()
+
+    def get_queryset(self):
+        return Timer.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -14,4 +16,6 @@ class TimerList(generics.ListCreateAPIView):
 
 class TimerDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TimerSerializer
-    queryset = Timer.objects.all()
+
+    def get_queryset(self):
+        return Timer.objects.filter(user=self.request.user)
