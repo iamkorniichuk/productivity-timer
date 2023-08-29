@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import functions
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from users.models import User
@@ -84,6 +85,9 @@ class Timer(models.Model):
 
     objects = TimerManager()
     current_objects = CurrentTimerManage()
+
+    def get_absolute_url(self):
+        return reverse("timers:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return str(self.start)

@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import functions
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from commons.functions import StartOf, EndOf
@@ -56,6 +57,9 @@ class Frequency(models.Model):
     )
 
     objects = FrequencyManager()
+
+    def get_absolute_url(self):
+        return reverse("frequencies:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.events_number} per {self.time_unit}"
