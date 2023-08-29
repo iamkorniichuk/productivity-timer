@@ -51,6 +51,9 @@ class TimeUnitChoices(models.TextChoices):
 
 
 class Frequency(models.Model):
+    class Meta:
+        verbose_name_plural = "frequencies"
+
     events_number = models.PositiveIntegerField(_("events number"))
     time_unit = models.CharField(
         _("time unit"), max_length=32, choices=TimeUnitChoices.choices
@@ -63,6 +66,3 @@ class Frequency(models.Model):
 
     def __str__(self):
         return f"{self.events_number} per {self.time_unit}"
-
-    class Meta:
-        verbose_name_plural = "frequencies"

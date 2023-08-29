@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .apps import TimersConfig
+from .views import *
+
 
 app_name = TimersConfig.name
-
-from .views import *
 
 urlpatterns = [
     path("", TimerList.as_view(), name="list"),

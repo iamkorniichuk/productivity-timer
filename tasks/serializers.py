@@ -4,11 +4,6 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    is_draft = serializers.BooleanField(required=False)
-    is_disposable = serializers.BooleanField(required=False)
-    completed_timers = serializers.IntegerField(required=False)
-    remaining_timers = serializers.IntegerField(required=False)
-
     class Meta:
         model = Task
         fields = "__all__"
@@ -19,3 +14,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "remaining_timers",
             "user",
         ]
+
+    is_draft = serializers.BooleanField(required=False)
+    is_disposable = serializers.BooleanField(required=False)
+    completed_timers = serializers.IntegerField(required=False)
+    remaining_timers = serializers.IntegerField(required=False)

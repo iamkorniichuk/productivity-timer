@@ -52,20 +52,6 @@ class TimerManager(models.Manager):
         )
 
 
-class CurrentTimerManage(TimerManager):
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .filter(
-                datetime__range=(
-                    models.F("task__frequency__start"),
-                    models.F("task__frequency__end"),
-                ),
-            )
-        )
-
-
 class Timer(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
@@ -84,7 +70,6 @@ class Timer(models.Model):
     )
 
     objects = TimerManager()
-    current_objects = CurrentTimerManage()
 
     def get_absolute_url(self):
         return reverse("timers:detail", kwargs={"pk": self.pk})

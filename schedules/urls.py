@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .apps import SchedulesConfig
+from .views import *
+
 
 app_name = SchedulesConfig.name
-
-from .views import *
 
 urlpatterns = [
     # TODO: Think about moving frequency to a separate app

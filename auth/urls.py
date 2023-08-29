@@ -3,6 +3,7 @@ from django.urls import path
 from .apps import AuthConfig
 from .views import LoginView, SignUpView, LogoutView, LogoutAllView
 
+
 app_name = AuthConfig.name
 
 urlpatterns = [

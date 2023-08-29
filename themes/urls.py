@@ -1,10 +1,10 @@
 from django.urls import path
 
 from .apps import ThemesConfig
+from .views import *
+
 
 app_name = ThemesConfig.name
-
-from .views import *
 
 urlpatterns = [
     path("", ThemeList.as_view(), name="list"),
