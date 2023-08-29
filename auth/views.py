@@ -11,7 +11,7 @@ from .serializers import SignUpSerializer
 # TODO: Rewrite when new django-rest-knox version releases (self.create_token only)
 class LoginView(generics.GenericAPIView):
     serializer_class = knox_settings.USER_SERIALIZER
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = [permissions.AllowAny]
 
     def get_serializer_data(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -33,6 +33,7 @@ class LoginView(generics.GenericAPIView):
 
 class SignUpView(LoginView):
     serializer_class = SignUpSerializer
+    permission_classes = [permissions.AllowAny]
 
     def get_serializer_data(self, request):
         serializer = self.get_serializer(data=request.data)
