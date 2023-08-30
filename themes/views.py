@@ -8,7 +8,7 @@ class ThemeList(generics.ListCreateAPIView):
     serializer_class = ThemeSerializer
 
     def get_queryset(self):
-        return Theme.objects.filter(user=self.request.user)
+        return Theme.main_objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -18,4 +18,4 @@ class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ThemeSerializer
 
     def get_queryset(self):
-        return Theme.objects.filter(user=self.request.user)
+        return Theme.main_objects.filter(user=self.request.user)

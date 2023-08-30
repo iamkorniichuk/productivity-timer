@@ -19,6 +19,11 @@ class ThemeManager(models.Manager):
         )
 
 
+class MainThemeManager(ThemeManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_main=True)
+
+
 class Theme(models.Model):
     name = models.CharField(_("name"), max_length=64)
     parent = models.ForeignKey(
@@ -37,6 +42,7 @@ class Theme(models.Model):
     )
 
     objects = ThemeManager()
+    main_objects = MainThemeManager()
 
     def get_absolute_url(self):
         return reverse("themes:detail", kwargs={"pk": self.pk})
