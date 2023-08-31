@@ -1,6 +1,8 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
 
+from users.serializers import UserSerializer
+
 from .models import Theme
 
 
@@ -10,9 +12,15 @@ class ThemeSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = [
             "is_main",
-            "user",
             "children",
+            "user",
         ]
 
     is_main = serializers.BooleanField(required=False)
     children = RecursiveField(many=True, required=False)
+    user = UserSerializer(required=False)
+
+
+class NestedThemeSerializer(ThemeSerializer):
+    children = None
+    user = None

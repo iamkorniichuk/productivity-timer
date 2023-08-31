@@ -1,5 +1,8 @@
 from rest_framework import serializers
 
+from users.serializers import UserSerializer
+from tasks.serializers import NestedTaskSerializer
+
 from .models import Timer
 
 
@@ -21,3 +24,5 @@ class TimerSerializer(serializers.ModelSerializer):
     is_ended = serializers.BooleanField(required=False)
     duration = serializers.DurationField(required=False)
     is_completed = serializers.BooleanField(required=False)
+    user = UserSerializer(required=False)
+    task = NestedTaskSerializer(required=False)
