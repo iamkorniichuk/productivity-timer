@@ -1,21 +1,15 @@
 from rest_framework import generics
+from commons.views import UserRelatedObjectsMixin
 
 from .serializers import ThemeSerializer
 from .models import Theme
 
 
-class ThemeList(generics.ListCreateAPIView):
+class ThemeList(UserRelatedObjectsMixin, generics.ListCreateAPIView):
     serializer_class = ThemeSerializer
-
-    def get_queryset(self):
-        return Theme.main_objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    queryset = Theme.main_objects.all()
 
 
-class ThemeDetail(generics.RetrieveUpdateDestroyAPIView):
+class ThemeDetail(UserRelatedObjectsMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ThemeSerializer
-
-    def get_queryset(self):
-        return Theme.main_objects.filter(user=self.request.user)
+    queryset = Theme.main_objects.all()

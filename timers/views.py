@@ -1,21 +1,15 @@
 from rest_framework import generics
+from commons.views import UserRelatedObjectsMixin
 
 from .serializers import TimerSerializer
 from .models import Timer
 
 
-class TimerList(generics.ListCreateAPIView):
+class TimerList(UserRelatedObjectsMixin, generics.ListCreateAPIView):
     serializer_class = TimerSerializer
-
-    def get_queryset(self):
-        return Timer.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    queryset = Timer.objects.all()
 
 
-class TimerDetail(generics.RetrieveUpdateDestroyAPIView):
+class TimerDetail(UserRelatedObjectsMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TimerSerializer
-
-    def get_queryset(self):
-        return Timer.objects.filter(user=self.request.user)
+    queryset = Timer.objects.all()
