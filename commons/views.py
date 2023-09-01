@@ -3,6 +3,12 @@ from rest_framework.serializers import BaseSerializer
 
 
 class UserRelatedObjectsMixin:
+    """
+    Limit queryset to objects which include FK to current logged in user.
+
+    Override user_field_name to specify user's property in serializer.
+    """
+
     user_field_name = "user"
 
     def get_queryset(self):
@@ -17,6 +23,12 @@ class UserRelatedObjectsMixin:
 
 
 class PrefetchRelatedManagersMixin:
+    """
+    Prefetch related models which are declared in serializer_class and are inherit from BaseSerializer.
+
+    Override serializer_managers property to set used manager: {field_name: manager_name}.
+    """
+
     serializer_managers = {}
 
     def get_queryset(self):
