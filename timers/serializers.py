@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from commons.serializers import CurrentUserDefault
+
 
 from users.serializers import UserSerializer
 from tasks.serializers import NestedTaskSerializer
@@ -25,5 +27,5 @@ class TimerSerializer(serializers.ModelSerializer):
     is_ended = serializers.BooleanField(required=False)
     duration = serializers.DurationField(required=False)
     is_completed = serializers.BooleanField(required=False)
-    user = UserSerializer(required=False)
+    user = UserSerializer(required=False, default=CurrentUserDefault())
     task = NestedTaskSerializer(required=False)

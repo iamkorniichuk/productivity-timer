@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from commons.serializers import CurrentUserDefault
 
 from users.serializers import UserSerializer
 from schedules.serializers import FrequencySerializer
@@ -25,10 +26,10 @@ class TaskSerializer(serializers.ModelSerializer):
     is_disposable = serializers.BooleanField(required=False)
     completed_timers = serializers.IntegerField(required=False)
     remaining_timers = serializers.IntegerField(required=False)
-    user = UserSerializer(required=False)
+    user = UserSerializer(required=False, default=CurrentUserDefault())
     frequency = FrequencySerializer(required=False)
     theme = NestedThemeSerializer(required=False)
 
 
 class NestedTaskSerializer(TaskSerializer):
-    user = None
+    pass
