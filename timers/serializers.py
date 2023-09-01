@@ -17,6 +17,7 @@ class TimerSerializer(serializers.ModelSerializer):
             "duration",
             "is_completed",
             "user",
+            "task",
         ]
 
     is_datetime_set = serializers.BooleanField(required=False)

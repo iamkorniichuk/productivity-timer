@@ -17,6 +17,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "completed_timers",
             "remaining_timers",
             "user",
+            "frequency",
+            "theme",
         ]
 
     is_draft = serializers.BooleanField(required=False)
@@ -24,8 +26,6 @@ class TaskSerializer(serializers.ModelSerializer):
     completed_timers = serializers.IntegerField(required=False)
     remaining_timers = serializers.IntegerField(required=False)
     user = UserSerializer(required=False)
-    # TODO: Fix creating
-    # TODO: When nested doesn't show annotated (explicit) fields like 'is_main' in Theme serializer -> use .values() in subquery
     frequency = FrequencySerializer(required=False)
     theme = NestedThemeSerializer(required=False)
 
