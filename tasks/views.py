@@ -1,15 +1,21 @@
 from rest_framework import generics
-from commons.views import UserRelatedObjectsMixin
+from commons.views import UserRelatedObjectsMixin, PrefetchRelatedManagersMixin
 
 from .serializers import TaskSerializer
 from .models import Task
 
 
-class TaskList(UserRelatedObjectsMixin, generics.ListCreateAPIView):
+class TaskList(
+    UserRelatedObjectsMixin, PrefetchRelatedManagersMixin, generics.ListCreateAPIView
+):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
 
 
-class TaskDetail(UserRelatedObjectsMixin, generics.RetrieveUpdateDestroyAPIView):
+class TaskDetail(
+    UserRelatedObjectsMixin,
+    PrefetchRelatedManagersMixin,
+    generics.RetrieveUpdateDestroyAPIView,
+):
     serializer_class = TaskSerializer
     queryset = Task.objects.all()
