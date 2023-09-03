@@ -1,5 +1,6 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 from commons.serializers import CurrentUserDefault
 
 from users.serializers import UserSerializer
@@ -7,7 +8,7 @@ from users.serializers import UserSerializer
 from .models import Theme
 
 
-class ThemeSerializer(serializers.ModelSerializer):
+class ThemeSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Theme
         fields = "__all__"
@@ -24,3 +25,4 @@ class ThemeSerializer(serializers.ModelSerializer):
 
 class NestedThemeSerializer(ThemeSerializer):
     children = None
+    # TODO: Add PK user's field

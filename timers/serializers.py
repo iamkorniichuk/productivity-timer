@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 from commons.serializers import CurrentUserDefault
 
 
@@ -8,7 +9,8 @@ from tasks.serializers import NestedTaskSerializer
 from .models import Timer
 
 
-class TimerSerializer(serializers.ModelSerializer):
+# TODO: Make firstly try to get, then create
+class TimerSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Timer
         fields = "__all__"
@@ -19,7 +21,6 @@ class TimerSerializer(serializers.ModelSerializer):
             "duration",
             "is_completed",
             "user",
-            "task",
         ]
 
     is_datetime_set = serializers.BooleanField(required=False)

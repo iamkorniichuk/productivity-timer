@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_writable_nested.serializers import WritableNestedModelSerializer
 from commons.serializers import CurrentUserDefault
 
 from users.serializers import UserSerializer
@@ -8,7 +9,7 @@ from themes.serializers import NestedThemeSerializer
 from .models import Task
 
 
-class TaskSerializer(serializers.ModelSerializer):
+class TaskSerializer(WritableNestedModelSerializer):
     class Meta:
         model = Task
         fields = "__all__"
@@ -18,8 +19,6 @@ class TaskSerializer(serializers.ModelSerializer):
             "completed_timers",
             "remaining_timers",
             "user",
-            "frequency",
-            "theme",
         ]
 
     is_draft = serializers.BooleanField(required=False)
