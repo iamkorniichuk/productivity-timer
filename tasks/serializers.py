@@ -17,14 +17,13 @@ class TaskSerializer(DefaultSupportNestedSerializer):
             "is_disposable",
             "completed_timers",
             "remaining_timers",
-            "user",
         ]
 
     is_draft = serializers.BooleanField(required=False)
     is_disposable = serializers.BooleanField(required=False)
     completed_timers = serializers.IntegerField(required=False)
     remaining_timers = serializers.IntegerField(required=False)
-    user = UserSerializer(required=False, default=CurrentUserDefault())
+    user = UserSerializer(default=CurrentUserDefault(), read_only=True)
     frequency = FrequencySerializer(required=False)
     theme = NestedThemeSerializer(required=False)
 

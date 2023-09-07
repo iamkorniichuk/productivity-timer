@@ -14,12 +14,11 @@ class ThemeSerializer(DefaultSupportNestedSerializer):
         read_only_fields = [
             "is_main",
             "children",
-            "user",
         ]
 
     is_main = serializers.BooleanField(required=False)
     children = RecursiveField(many=True, required=False)
-    user = UserSerializer(required=False, default=CurrentUserDefault())
+    user = UserSerializer(default=CurrentUserDefault(), read_only=True)
 
 
 class NestedThemeSerializer(ThemeSerializer):

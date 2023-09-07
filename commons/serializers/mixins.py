@@ -38,8 +38,9 @@ class IdOrWriteNestedMixin:
     def get_fields(self):
         fields = super().get_fields()
         related_fields = {}
-        # TODO: Skip read_only fields
         for name, field in fields.items():
+            if field.read_only:
+                continue
             if isinstance(field, ModelSerializer):
                 Model = field.Meta.model
                 related_name = name + "_id"
