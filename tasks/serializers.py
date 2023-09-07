@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
-from commons.serializers import CurrentUserDefault, DefaultSupportNestedMixin
+from commons.serializers import CurrentUserDefault, DefaultSupportNestedSerializer
 
 from users.serializers import UserSerializer
 from schedules.serializers import FrequencySerializer
@@ -9,7 +8,7 @@ from themes.serializers import NestedThemeSerializer
 from .models import Task
 
 
-class TaskSerializer(DefaultSupportNestedMixin, WritableNestedModelSerializer):
+class TaskSerializer(DefaultSupportNestedSerializer):
     class Meta:
         model = Task
         fields = "__all__"

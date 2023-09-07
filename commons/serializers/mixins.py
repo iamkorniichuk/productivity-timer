@@ -1,16 +1,18 @@
 from django.core.exceptions import ValidationError
 from django.forms.models import model_to_dict
-from drf_writable_nested.mixins import BaseNestedModelSerializer
+from rest_framework.serializers import ModelSerializer
+
+from .fields import OnlyPrimaryKeyRelatedField
 
 
-class DefaultSupportNestedMixin(BaseNestedModelSerializer):
+class DefaultSupportNestedMixin:
     def update_or_create_direct_relations(self, attrs, relations):
-        for field_name, (field, field_source) in relations.items():
+        for name, (field, source) in relations.items():
             obj = None
 
-            data = self.get_initial().get(field_name, None)
+            data = self.get_initial().get(name, None)
             if not data:
-                obj = self.fields[field_name].default(self)
+                obj = self.fields[name].default(self)
                 data = model_to_dict(obj)
             else:
                 model_class = field.Meta.model
@@ -27,6 +29,22 @@ class DefaultSupportNestedMixin(BaseNestedModelSerializer):
 
             try:
                 serializer.is_valid(raise_exception=True)
-                attrs[field_source] = serializer.save(**data)
+                attrs[source] = serializer.save(**data)
             except ValidationError as exc:
-                raise ValidationError({field_name: exc.detail})
+                raise ValidationError({name: exc.detail})
+
+
+class IdOrWriteNestedMixin:
+    def get_fields(self):
+        fields = super().get_fields()
+        related_fields = {}
+        # TODO: Skip read_only fields
+        for name, field in fields.items():
+            if isinstance(field, ModelSerializer):
+                Model = field.Meta.model
+                related_name = name + "_id"
+                related_fields[related_name] = OnlyPrimaryKeyRelatedField(
+                    Model._default_manager.all()
+                )
+        fields.update(related_fields)
+        return fields

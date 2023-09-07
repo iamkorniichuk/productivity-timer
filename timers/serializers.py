@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
-from commons.serializers import CurrentUserDefault, DefaultSupportNestedMixin
+from commons.serializers import CurrentUserDefault, DefaultSupportNestedSerializer
 
 
 from users.serializers import UserSerializer
@@ -9,8 +8,7 @@ from tasks.serializers import NestedTaskSerializer
 from .models import Timer
 
 
-# TODO: Make firstly try to get, then create
-class TimerSerializer(DefaultSupportNestedMixin, WritableNestedModelSerializer):
+class TimerSerializer(DefaultSupportNestedSerializer):
     class Meta:
         model = Timer
         fields = "__all__"

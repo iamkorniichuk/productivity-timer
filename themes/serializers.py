@@ -1,14 +1,13 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
-from drf_writable_nested.serializers import WritableNestedModelSerializer
-from commons.serializers import CurrentUserDefault, DefaultSupportNestedMixin
+from commons.serializers import CurrentUserDefault, DefaultSupportNestedSerializer
 
 from users.serializers import UserSerializer
 
 from .models import Theme
 
 
-class ThemeSerializer(DefaultSupportNestedMixin, WritableNestedModelSerializer):
+class ThemeSerializer(DefaultSupportNestedSerializer):
     class Meta:
         model = Theme
         fields = "__all__"
