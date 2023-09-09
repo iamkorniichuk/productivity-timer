@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from commons.serializers import CurrentUserDefault
 
 from .models import User
 
@@ -22,3 +23,9 @@ class UserSerializer(serializers.ModelSerializer):
             "groups",
             "user_permissions",
         ]
+
+
+USER_FIELD = UserSerializer(
+    default=CurrentUserDefault(),
+    read_only=True,
+)

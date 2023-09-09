@@ -25,6 +25,7 @@ class SerializerRepresentationMixin:
         return a
 
 
+# TODO: Fix declaring read_only in meta doesn't work for this type
 class RepresentativePrimaryKeyRelatedField(
     SerializerRepresentationMixin,
     PrimaryKeyRelatedField,

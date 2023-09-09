@@ -1,8 +1,7 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
-from commons.serializers import CurrentUserDefault
 
-from users.serializers import UserSerializer
+from users.serializers import USER_FIELD
 
 from .models import Theme
 
@@ -19,7 +18,7 @@ class ThemeSerializer(serializers.ModelSerializer):
 
     is_main = serializers.BooleanField(required=False)
     children = RecursiveField(many=True, required=False)
-    user = UserSerializer(default=CurrentUserDefault())
+    user = USER_FIELD
 
 
 class NestedThemeSerializer(ThemeSerializer):

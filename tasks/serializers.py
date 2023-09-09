@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from commons.serializers import CurrentUserDefault, RepresentativePrimaryKeyRelatedField
+from commons.serializers import RepresentativePrimaryKeyRelatedField
 
-from users.serializers import UserSerializer
+from users.serializers import USER_FIELD
 from schedules.serializers import FrequencySerializer
 from themes.serializers import NestedThemeSerializer
 
@@ -24,10 +24,7 @@ class TaskSerializer(serializers.ModelSerializer):
     is_disposable = serializers.BooleanField(required=False)
     completed_timers = serializers.IntegerField(required=False)
     remaining_timers = serializers.IntegerField(required=False)
-    user = RepresentativePrimaryKeyRelatedField(
-        serializer_class=UserSerializer,
-        default=CurrentUserDefault(),
-    )
+    user = USER_FIELD
     frequency = RepresentativePrimaryKeyRelatedField(
         serializer_class=FrequencySerializer,
         required=False,
@@ -39,4 +36,6 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class NestedTaskSerializer(TaskSerializer):
-    pass
+    user = None
+    frequency = None
+    theme = None

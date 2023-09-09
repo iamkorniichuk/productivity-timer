@@ -6,7 +6,9 @@ from .models import Theme
 
 
 class ThemeList(
-    UserRelatedObjectsMixin, PrefetchRelatedManagersMixin, generics.ListCreateAPIView
+    UserRelatedObjectsMixin,
+    PrefetchRelatedManagersMixin,
+    generics.ListCreateAPIView,
 ):
     serializer_class = ThemeSerializer
     queryset = Theme.main_objects.all()
