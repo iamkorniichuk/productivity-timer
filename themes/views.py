@@ -5,7 +5,6 @@ from .serializers import ThemeSerializer
 from .models import Theme
 
 
-# TODO: Fix: all methods interact with main_objects queryset
 class ThemeList(
     UserRelatedObjectsMixin, PrefetchRelatedManagersMixin, generics.ListCreateAPIView
 ):
@@ -19,4 +18,4 @@ class ThemeDetail(
     generics.RetrieveUpdateDestroyAPIView,
 ):
     serializer_class = ThemeSerializer
-    queryset = Theme.main_objects.all()
+    queryset = Theme.objects.all()
