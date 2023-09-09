@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from commons.serializers import CurrentUserDefault
+from commons.serializers import CurrentUserDefault, RepresentativePrimaryKeyRelatedField
 
 
 from users.serializers import UserSerializer
@@ -19,7 +19,6 @@ class TimerSerializer(serializers.ModelSerializer):
             "duration",
             "is_completed",
             "user",
-            "task",
         ]
 
     is_datetime_set = serializers.BooleanField(required=False)
@@ -27,6 +26,13 @@ class TimerSerializer(serializers.ModelSerializer):
     is_ended = serializers.BooleanField(required=False)
     duration = serializers.DurationField(required=False)
     is_completed = serializers.BooleanField(required=False)
-    # TODO: Fix that declaring read_only in Meta doesn't work
-    user = UserSerializer(default=CurrentUserDefault())
-    task = NestedTaskSerializer(required=False)
+    # TODO: Fix declaring read_only in meta doesn't work for this type
+    user = RepresentativePrimaryKeyRelatedField(
+        serializer_class=UserSerializer,
+        default=CurrentUserDefault(),
+        read_only=True,
+    )
+    task = RepresentativePrimaryKeyRelatedField(
+        serializer_class=NestedTaskSerializer,
+        required=False,
+    )
