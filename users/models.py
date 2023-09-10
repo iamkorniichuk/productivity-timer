@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
 )
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -33,6 +34,9 @@ class User(PermissionsMixin, AbstractBaseUser):
     REQUIRED_FIELDS = ["password"]
 
     objects = UserManager()
+
+    def get_absolute_url(self):
+        return reverse("users:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return str(self.email)

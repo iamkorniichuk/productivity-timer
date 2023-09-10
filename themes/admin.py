@@ -7,6 +7,6 @@ from .models import Theme
 
 @admin.register(Theme)
 class ThemeAdmin(admin.ModelAdmin):
-    list_display = ["pk", "name", "parent"]
+    list_display = ["pk", "name", "parent", "user"]
     list_filter = [bool_filter_factory("is_main", title="is main")]
     exclude = []

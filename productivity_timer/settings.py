@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "knox",
     "timers",
     "tasks",
     "schedules",
@@ -136,3 +138,20 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+LOGIN_URL = ...
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "knox.auth.TokenAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+REST_KNOX = {
+    "USER_SERIALIZER": "auth.serializers.LoginSerializer",
+}

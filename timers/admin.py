@@ -14,11 +14,13 @@ class TimerAdmin(admin.ModelAdmin):
         "datetime",
         "task",
         "duration",
+        "user",
     ]
     list_filter = [
-        bool_filter_factory("is_ended", title="is ended"),
-        bool_filter_factory("is_date_set", title="is date set"),
+        bool_filter_factory("is_datetime_set", title="is datetime set"),
+        bool_filter_factory("is_going", title="is going"),
         bool_filter_factory("is_disposable", title="is disposable"),
+        bool_filter_factory("is_completed", title="is completed"),
     ]
     date_hierarchy = "start"
     exclude = []

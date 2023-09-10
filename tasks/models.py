@@ -1,13 +1,19 @@
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from commons.functions import NonAggregateCount
 
+from users.models import User
 from themes.models import Theme
 from schedules.models import Frequency
 
 
 class TaskManager(models.Manager):
+    def create(self, **kwargs):
+        instance = super().create(**kwargs)
+        return self.get_queryset().get(pk=instance.pk)
+
     def get_queryset(self):
         from timers.models import Timer
 
@@ -76,8 +82,17 @@ class Task(models.Model):
         related_name="tasks",
         verbose_name=_("frequency"),
     )
+    user = models.ForeignKey(
+        User,
+        models.CASCADE,
+        related_name="tasks",
+        verbose_name=_("user"),
+    )
 
     objects = TaskManager()
+
+    def get_absolute_url(self):
+        return reverse("tasks:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return self.name or str(self.wanted_duration)
