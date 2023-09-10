@@ -21,9 +21,12 @@ class TaskManager(models.Manager):
             pk=models.OuterRef("task__frequency__pk")
         )[:1]
 
-        related_current_completed_timers = Timer.objects.filter(
+        all_related_completed_timers = Timer.objects.filter(
             task=models.OuterRef("pk"),
             is_completed=True,
+        )
+
+        current_related_completed_timers = all_related_completed_timers.filter(
             datetime__range=[
                 models.Subquery(related_frequency.values("start")),
                 models.Subquery(related_frequency.values("end")),
@@ -46,16 +49,27 @@ class TaskManager(models.Manager):
                     models.Q(frequency__isnull=True),
                     output_field=models.BooleanField(_("is disposable")),
                 ),
-                completed_timers=models.ExpressionWrapper(
+                all_completed_timers=models.ExpressionWrapper(
                     models.Subquery(
-                        related_current_completed_timers.annotate(
+                        all_related_completed_timers.annotate(
                             count=NonAggregateCount("pk")
                         ).values("count")[:1]
                     ),
-                    output_field=models.PositiveIntegerField(_("completed timers")),
+                    output_field=models.PositiveIntegerField(_("all completed timers")),
+                ),
+                current_completed_timers=models.ExpressionWrapper(
+                    models.Subquery(
+                        current_related_completed_timers.annotate(
+                            count=NonAggregateCount("pk")
+                        ).values("count")[:1]
+                    ),
+                    output_field=models.PositiveIntegerField(
+                        _("current completed timers")
+                    ),
                 ),
                 remaining_timers=models.ExpressionWrapper(
-                    models.F("frequency__events_number") - models.F("completed_timers"),
+                    models.F("frequency__events_number")
+                    - models.F("current_completed_timers"),
                     output_field=models.IntegerField(_("remaining timers")),
                 ),
             )

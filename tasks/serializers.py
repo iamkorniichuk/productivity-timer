@@ -18,7 +18,8 @@ class TaskSerializer(serializers.ModelSerializer):
             "is_current_version",
             "is_draft",
             "is_disposable",
-            "completed_timers",
+            "all_completed_timers",
+            "current_completed_timers",
             "remaining_timers",
             "previous_version",
         ]
@@ -26,7 +27,8 @@ class TaskSerializer(serializers.ModelSerializer):
     is_current_version = serializers.BooleanField(required=False)
     is_draft = serializers.BooleanField(required=False)
     is_disposable = serializers.BooleanField(required=False)
-    completed_timers = serializers.IntegerField(required=False)
+    all_completed_timers = serializers.IntegerField(required=False)
+    current_completed_timers = serializers.IntegerField(required=False)
     remaining_timers = serializers.IntegerField(required=False)
     user = USER_FIELD
     frequency = RepresentativePrimaryKeyRelatedField(
@@ -40,7 +42,7 @@ class TaskSerializer(serializers.ModelSerializer):
     previous_version = RecursiveField("PreviousVersionTaskSerializer", required=False)
 
     def update(self, instance, validated_data):
-        if instance.completed_timers > 0:  # TODO: Change to OVERALL completed timers
+        if instance.all_completed_timers > 0:
             data = model_to_data(instance, exclude=["id"])
             data["previous_version"] = instance
             data.update(validated_data)

@@ -29,7 +29,7 @@ class TimerManager(models.Manager):
                     ),
                 ),
                 duration=models.ExpressionWrapper(
-                    models.F("end") - models.F("start"),
+                    models.F("end") - models.F("datetime"),
                     output_field=models.DurationField(_("duration")),
                 ),
                 is_datetime_set=models.ExpressionWrapper(
