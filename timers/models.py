@@ -11,7 +11,7 @@ class TimerManager(models.Manager):
     def create(self, **kwargs):
         # self.get_queryset().create(**kwargs) doesn't populate manager's annotations
         instance = super().create(**kwargs)
-        # TODO: Most likely hit the db twice -> is it bad practice?
+        # TODO: Hit the db twice -> optimize?
         return self.get_queryset().get(pk=instance.pk)
 
     def get_queryset(self):

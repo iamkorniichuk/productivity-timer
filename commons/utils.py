@@ -1,4 +1,3 @@
-# TODO: Fix (doesn't work in admin)
 def format_timedelta(timedelta, template="{d} days {H}:{M}:{S}"):
     units = {"d": timedelta.days}
     units["h"], remainings = divmod(timedelta.seconds, 3600)
