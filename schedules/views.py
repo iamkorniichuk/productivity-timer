@@ -9,6 +9,6 @@ class FrequencyList(generics.ListCreateAPIView):
     queryset = Frequency.objects.all()
 
 
-class FrequencyDetail(generics.RetrieveUpdateDestroyAPIView):
+class FrequencyDetail(generics.RetrieveAPIView):
     serializer_class = FrequencySerializer
     queryset = Frequency.objects.all()
