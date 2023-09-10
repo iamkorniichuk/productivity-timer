@@ -9,7 +9,7 @@ class TaskList(
     UserRelatedObjectsMixin, PrefetchRelatedManagersMixin, generics.ListCreateAPIView
 ):
     serializer_class = TaskSerializer
-    queryset = Task.objects.all()
+    queryset = Task.current_version_objects.all()
 
 
 class TaskDetail(

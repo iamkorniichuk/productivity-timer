@@ -34,6 +34,10 @@ class TaskManager(models.Manager):
             super()
             .get_queryset()
             .annotate(
+                is_current_version=models.ExpressionWrapper(
+                    models.Q(next_version__isnull=True),
+                    output_field=models.BooleanField(_("is current version")),
+                ),
                 is_draft=models.ExpressionWrapper(
                     models.Q(theme__isnull=True),
                     output_field=models.BooleanField(_("is draft")),
@@ -56,6 +60,11 @@ class TaskManager(models.Manager):
                 ),
             )
         )
+
+
+class CurrentVersionTaskManager(TaskManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_current_version=True)
 
 
 class Task(models.Model):
@@ -88,8 +97,17 @@ class Task(models.Model):
         related_name="tasks",
         verbose_name=_("user"),
     )
+    previous_version = models.OneToOneField(
+        "Task",
+        models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="next_version",
+        verbose_name=_("previous version"),
+    )
 
     objects = TaskManager()
+    current_version_objects = CurrentVersionTaskManager()
 
     def get_absolute_url(self):
         return reverse("tasks:detail", kwargs={"pk": self.pk})
