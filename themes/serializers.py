@@ -17,8 +17,12 @@ class ThemeSerializer(serializers.ModelSerializer):
         ]
 
     is_main = serializers.BooleanField(required=False)
-    children = RecursiveField(many=True, required=False)
+    children = RecursiveField(to="ChildThemeSerializer", many=True, required=False)
     user = USER_FIELD
+
+
+class ChildThemeSerializer(ThemeSerializer):
+    user = None
 
 
 class NestedThemeSerializer(ThemeSerializer):
