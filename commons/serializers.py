@@ -21,12 +21,13 @@ class SerializeAnnotationsMixin:
         serializer_class = self.serializer_field_mapping[
             annotation.output_field.__class__
         ]
-        # TODO: Add support for extra_kwargs
         return serializer_class(required=False, read_only=True)
 
     def get_manager_annotations(self):
-        query = getattr(self.Meta.model, self.manager_name).get_queryset()._query
-        return query.annotations
+        if not hasattr(self, "annotations"):
+            objects = getattr(self.Meta.model, self.manager_name).get_queryset()
+            self.annotations = objects._query.annotations
+        return self.annotations
 
 
 class SerializerRepresentationMixin:
