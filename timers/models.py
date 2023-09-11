@@ -3,17 +3,13 @@ from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from commons.models import ShowAnnotationAfterCreateMixin
+
 from users.models import User
 from tasks.models import Task
 
 
-class TimerManager(models.Manager):
-    def create(self, **kwargs):
-        # self.get_queryset().create(**kwargs) doesn't populate manager's annotations
-        instance = super().create(**kwargs)
-        # TODO: Hit the db twice -> optimize?
-        return self.get_queryset().get(pk=instance.pk)
-
+class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
         return (
             super()

@@ -3,17 +3,14 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from commons.functions import NonAggregateCount
+from commons.models import ShowAnnotationAfterCreateMixin
 
 from users.models import User
 from themes.models import Theme
 from schedules.models import Frequency
 
 
-class TaskManager(models.Manager):
-    def create(self, **kwargs):
-        instance = super().create(**kwargs)
-        return self.get_queryset().get(pk=instance.pk)
-
+class TaskManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
         from timers.models import Timer
 
