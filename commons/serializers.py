@@ -8,6 +8,27 @@ class CurrentUserDefault:
         return instance.context["request"].user
 
 
+class SerializeAnnotationsMixin:
+    manager_name = "_default_manager"
+
+    def get_fields(self):
+        fields = super().get_fields()
+        for name, annotation in self.get_manager_annotations().items():
+            fields[name] = self.create_field(annotation)
+        return fields
+
+    def create_field(self, annotation):
+        serializer_class = self.serializer_field_mapping[
+            annotation.output_field.__class__
+        ]
+        # TODO: Add support for extra_kwargs
+        return serializer_class(required=False, read_only=True)
+
+    def get_manager_annotations(self):
+        query = getattr(self.Meta.model, self.manager_name).get_queryset()._query
+        return query.annotations
+
+
 class SerializerRepresentationMixin:
     def __init__(self, serializer_class, *args, **kwargs):
         self.serializer_class = serializer_class

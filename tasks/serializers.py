@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from rest_framework_recursive.fields import RecursiveField
-from commons.serializers import RepresentativePrimaryKeyRelatedField
+
+from commons.serializers import (
+    RepresentativePrimaryKeyRelatedField,
+    SerializeAnnotationsMixin,
+)
 from commons.utils import model_to_data
 
 from users.serializers import USER_FIELD
@@ -10,26 +14,11 @@ from themes.serializers import NestedThemeSerializer
 from .models import Task
 
 
-class TaskSerializer(serializers.ModelSerializer):
+class TaskSerializer(SerializeAnnotationsMixin, serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = "__all__"
-        read_only_fields = [
-            "is_current_version",
-            "is_draft",
-            "is_disposable",
-            "all_completed_timers",
-            "current_completed_timers",
-            "remaining_timers",
-            "previous_version",
-        ]
 
-    is_current_version = serializers.BooleanField(required=False)
-    is_draft = serializers.BooleanField(required=False)
-    is_disposable = serializers.BooleanField(required=False)
-    all_completed_timers = serializers.IntegerField(required=False)
-    current_completed_timers = serializers.IntegerField(required=False)
-    remaining_timers = serializers.IntegerField(required=False)
     user = USER_FIELD
     frequency = RepresentativePrimaryKeyRelatedField(
         serializer_class=FrequencySerializer,
@@ -39,7 +28,11 @@ class TaskSerializer(serializers.ModelSerializer):
         serializer_class=NestedThemeSerializer,
         required=False,
     )
-    previous_version = RecursiveField("PreviousVersionTaskSerializer", required=False)
+    previous_version = RecursiveField(
+        "PreviousVersionTaskSerializer",
+        required=False,
+        read_only=True,
+    )
 
     def update(self, instance, validated_data):
         if instance.all_completed_timers > 0:
