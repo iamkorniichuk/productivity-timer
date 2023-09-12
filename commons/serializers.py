@@ -9,11 +9,11 @@ class CurrentUserDefault:
 
 
 class SerializeAnnotationsMixin:
-    manager_name = "_default_manager"
+    queryset = None
 
     def get_fields(self):
         fields = super().get_fields()
-        for name, annotation in self.get_manager_annotations().items():
+        for name, annotation in self.get_annotations().items():
             fields[name] = self.create_field(annotation)
         return fields
 
@@ -23,10 +23,14 @@ class SerializeAnnotationsMixin:
         ]
         return serializer_class(required=False, read_only=True)
 
-    def get_manager_annotations(self):
+    def get_queryset(self):
+        if not self.queryset:
+            self.queryset = self.Meta.model._default_manager.get_queryset()
+        return self.queryset
+
+    def get_annotations(self):
         if not hasattr(self, "annotations"):
-            objects = getattr(self.Meta.model, self.manager_name).get_queryset()
-            self.annotations = objects._query.annotations
+            self.annotations = self.get_queryset()._query.annotations
         return self.annotations
 
 
