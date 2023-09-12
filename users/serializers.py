@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from commons.serializers import CurrentUserDefault
 
+from commons.serializers import CurrentUserDefault
 from .models import User
 
 

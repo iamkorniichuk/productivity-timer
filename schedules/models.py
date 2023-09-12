@@ -59,7 +59,7 @@ class Frequency(models.Model):
     objects = FrequencyManager()
 
     def get_absolute_url(self):
-        return reverse("frequencies:detail", kwargs={"pk": self.pk})
+        return reverse("schedules:frequency_detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.events_number} per {self.time_unit}"

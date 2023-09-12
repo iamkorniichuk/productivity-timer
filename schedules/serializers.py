@@ -1,11 +1,15 @@
 from rest_framework import serializers
 
-from commons.serializers import SerializeAnnotationsMixin
+from commons.serializers import SerializeAnnotationsMixin, SerializeUrlMixin
 
 from .models import Frequency
 
 
-class FrequencySerializer(SerializeAnnotationsMixin, serializers.ModelSerializer):
+class FrequencySerializer(
+    SerializeAnnotationsMixin,
+    SerializeUrlMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = Frequency
         fields = "__all__"

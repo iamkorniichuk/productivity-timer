@@ -4,6 +4,7 @@ from rest_framework_recursive.fields import RecursiveField
 from commons.serializers import (
     RepresentativePrimaryKeyRelatedField,
     SerializeAnnotationsMixin,
+    SerializeUrlMixin,
 )
 from commons.utils import model_to_data
 
@@ -14,7 +15,11 @@ from themes.serializers import NestedThemeSerializer
 from .models import Task
 
 
-class TaskSerializer(SerializeAnnotationsMixin, serializers.ModelSerializer):
+class TaskSerializer(
+    SerializeAnnotationsMixin,
+    SerializeUrlMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = Task
         fields = "__all__"

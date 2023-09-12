@@ -3,6 +3,7 @@ from rest_framework import serializers
 from commons.serializers import (
     RepresentativePrimaryKeyRelatedField,
     SerializeAnnotationsMixin,
+    SerializeUrlMixin,
 )
 
 
@@ -12,7 +13,11 @@ from tasks.serializers import NestedTaskSerializer
 from .models import Timer
 
 
-class TimerSerializer(SerializeAnnotationsMixin, serializers.ModelSerializer):
+class TimerSerializer(
+    SerializeAnnotationsMixin,
+    SerializeUrlMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = Timer
         fields = "__all__"

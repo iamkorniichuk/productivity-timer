@@ -1,4 +1,4 @@
-from rest_framework.serializers import PrimaryKeyRelatedField
+from rest_framework.serializers import PrimaryKeyRelatedField, URLField
 
 
 class CurrentUserDefault:
@@ -36,6 +36,21 @@ class SerializeAnnotationsMixin:
         if not hasattr(self, "annotations"):
             self.annotations = self.get_queryset()._query.annotations
         return self.annotations
+
+
+class SerializeUrlMixin:
+    """
+    Populates serializer with URL field.
+
+    Override `url_source` to specify a source different from `.get_absolute_url()`.
+    """
+
+    url_source = "get_absolute_url"
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["url"] = URLField(source=self.url_source, read_only=True)
+        return fields
 
 
 # TODO: Fix declaring read_only in meta doesn't work for this type

@@ -1,14 +1,18 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
 
-from commons.serializers import SerializeAnnotationsMixin
+from commons.serializers import SerializeAnnotationsMixin, SerializeUrlMixin
 
 from users.serializers import USER_FIELD
 
 from .models import Theme
 
 
-class ThemeSerializer(SerializeAnnotationsMixin, serializers.ModelSerializer):
+class ThemeSerializer(
+    SerializeAnnotationsMixin,
+    SerializeUrlMixin,
+    serializers.ModelSerializer,
+):
     class Meta:
         model = Theme
         fields = "__all__"
