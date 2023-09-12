@@ -9,6 +9,12 @@ class CurrentUserDefault:
 
 
 class SerializeAnnotationsMixin:
+    """
+    Implicitly adds manager's annotations. Calls to db once to retrieve all annotation fields.
+
+    Override `queryset` or `.get_queryset()` to set source of annotations different from default model's manager.
+    """
+
     queryset = None
 
     def get_fields(self):
@@ -24,9 +30,7 @@ class SerializeAnnotationsMixin:
         return serializer_class(required=False, read_only=True)
 
     def get_queryset(self):
-        if not self.queryset:
-            self.queryset = self.Meta.model._default_manager.get_queryset()
-        return self.queryset
+        return self.queryset or self.Meta.model._default_manager.all()
 
     def get_annotations(self):
         if not hasattr(self, "annotations"):
@@ -34,7 +38,14 @@ class SerializeAnnotationsMixin:
         return self.annotations
 
 
-class SerializerRepresentationMixin:
+# TODO: Fix declaring read_only in meta doesn't work for this type
+class RepresentativePrimaryKeyRelatedField(PrimaryKeyRelatedField):
+    """
+    Behaves as `PrimaryKeyRelatedField` but returns representation of specified serializer.
+
+    Override `queryset` or `.get_queryset()` to set source of retrieving an object different from default model's manager.
+    """
+
     def __init__(self, serializer_class, *args, **kwargs):
         self.serializer_class = serializer_class
         self.queryset = kwargs.pop("queryset", None)
@@ -48,11 +59,3 @@ class SerializerRepresentationMixin:
         obj = self.get_queryset().get(pk=pk)
         serializer = self.serializer_class()
         return serializer.to_representation(obj)
-
-
-# TODO: Fix declaring read_only in meta doesn't work for this type
-class RepresentativePrimaryKeyRelatedField(
-    SerializerRepresentationMixin,
-    PrimaryKeyRelatedField,
-):
-    pass

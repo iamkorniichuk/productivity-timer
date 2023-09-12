@@ -4,14 +4,16 @@ from django.db.models.lookups import Exact
 
 
 class NonAggregateCount(models.Count):
-    """Doesn't aggregate rows, unlike built-in Count function"""
+    """Doesn't aggregate rows, unlike built-in `Count` function"""
 
     contains_aggregate = False
 
 
 class TimeUnitToDuration(Cast):
-    """Converts text fields to duration using Cast function.
-    Expresses 'quarter' as '3 months.'"""
+    """
+    Converts text fields to duration using `Cast`.
+    Expresses 'quarter' as '3 months.
+    '"""
 
     def __init__(self, expression, output_field=models.DurationField()):
         expression = models.Case(
@@ -25,7 +27,7 @@ class TimeUnitToDuration(Cast):
 
 
 class StartOf(models.Func):
-    """Accepts 'kind' argument as field, unlike built-in Trunc function."""
+    """Accepts 'kind' argument as field, unlike built-in `Trunc` function."""
 
     def as_postgresql(self, compiler, connection):
         return super().as_sql(compiler, connection, function="DATE_TRUNC")

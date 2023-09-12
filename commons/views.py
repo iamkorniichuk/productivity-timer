@@ -1,8 +1,8 @@
 class UserRelatedObjectsMixin:
     """
-    Limit queryset to objects which include FK to current logged in user.
+    Limits queryset to objects which include FK to current logged in user.
 
-    Override user_field_name to specify user's property in serializer.
+    Override `user_field_name` to specify user field's name in serializer.
     """
 
     user_field_name = "user"
