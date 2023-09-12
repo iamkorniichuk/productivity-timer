@@ -23,7 +23,4 @@ class TimerSerializer(
         fields = "__all__"
 
     user = USER_FIELD
-    task = RepresentativePrimaryKeyRelatedField(
-        serializer_class=NestedTaskSerializer,
-        required=False,
-    )
+    task = RepresentativePrimaryKeyRelatedField(serializer_class=NestedTaskSerializer)
