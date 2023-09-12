@@ -15,4 +15,7 @@ class UserRelatedObjectsMixin:
 
     @property
     def user_kwargs(self):
-        return {self.user_field_name: self.request.user}
+        user = self.request.user
+        if not user.is_authenticated:
+            user = None
+        return {self.user_field_name: user}

@@ -15,6 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.utils.translation import gettext_lazy as _
+
+from .schema import schema_view
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -24,4 +28,14 @@ urlpatterns = [
     path("tasks/", include("tasks.urls")),
     path("users/", include("users.urls")),
     path("themes/", include("themes.urls")),
+    path(
+        "schema<format>/",
+        schema_view.without_ui(),
+        name="schema",
+    ),
+    path(
+        "schema/",
+        schema_view.with_ui(),
+        name="ui_schema",
+    ),
 ]
