@@ -28,6 +28,10 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                     models.F("end") - models.F("start"),
                     output_field=models.DurationField(_("duration")),
                 ),
+                overflow_duration=models.ExpressionWrapper(
+                    models.F("duration") - models.F("task__wanted_duration"),
+                    output_field=models.DurationField(_("overflow duration")),
+                ),
                 is_datetime_set=models.ExpressionWrapper(
                     models.Q(set_datetime__isnull=False),
                     output_field=models.BooleanField(_("is datetime set")),
@@ -35,10 +39,6 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 is_going=models.ExpressionWrapper(
                     models.Q(end__isnull=True),
                     output_field=models.BooleanField(_("is going")),
-                ),
-                is_disposable=models.ExpressionWrapper(
-                    models.Q(task__isnull=True),
-                    output_field=models.BooleanField(_("is disposable")),
                 ),
                 is_completed=models.ExpressionWrapper(
                     models.Q(duration__gte=models.F("task__wanted_duration")),
