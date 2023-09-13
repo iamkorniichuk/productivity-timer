@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "knox",
     "drf_yasg",
+    "djangorestframework_camel_case",
     "timers",
     "tasks",
     "schedules",
@@ -60,6 +61,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "djangorestframework_camel_case.middleware.CamelCaseMiddleWare",
 ]
 
 ROOT_URLCONF = "productivity_timer.urls"
@@ -143,6 +145,12 @@ AUTH_USER_MODEL = "users.User"
 LOGIN_URL = reverse_lazy("auth:login")
 
 REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "knox.auth.TokenAuthentication",
     ],
