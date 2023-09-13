@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import ShowAnnotationAfterCreateMixin
+from commons.functions import NonAggregateSum
 
 from users.models import User
 from tasks.models import Task
@@ -11,6 +12,11 @@ from tasks.models import Task
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
+        all_ended_related_pauses = Pause.objects.filter(
+            timer=models.OuterRef("pk"),
+            is_ended=True,
+        )
+
         return (
             super()
             .get_queryset()
@@ -24,8 +30,17 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                         _("datetime"),
                     ),
                 ),
+                pauses_duration=models.ExpressionWrapper(
+                    models.Subquery(
+                        all_ended_related_pauses.annotate(
+                            sum=NonAggregateSum("duration")
+                        ).values("sum")[:1]
+                    ),
+                    output_field=models.DurationField(_("pauses duration")),
+                ),
+                # TODO: To test
                 duration=models.ExpressionWrapper(
-                    models.F("end") - models.F("start"),
+                    models.F("end") - models.F("start") - models.F("pauses_duration"),
                     output_field=models.DurationField(_("duration")),
                 ),
                 overflow_duration=models.ExpressionWrapper(
@@ -36,9 +51,9 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                     models.Q(set_datetime__isnull=False),
                     output_field=models.BooleanField(_("is datetime set")),
                 ),
-                is_going=models.ExpressionWrapper(
-                    models.Q(end__isnull=True),
-                    output_field=models.BooleanField(_("is going")),
+                is_ended=models.ExpressionWrapper(
+                    models.Q(end__isnull=False),
+                    output_field=models.BooleanField(_("is ended")),
                 ),
                 is_completed=models.ExpressionWrapper(
                     models.Q(duration__gte=models.F("task__wanted_duration")),
@@ -69,6 +84,40 @@ class Timer(models.Model):
 
     def get_absolute_url(self):
         return reverse("timers:detail", kwargs={"pk": self.pk})
+
+    def __str__(self):
+        return str(self.start)
+
+
+class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .annotate(
+                is_ended=models.ExpressionWrapper(
+                    models.Q(end__isnull=False),
+                    output_field=models.BooleanField(_("is ended")),
+                ),
+                duration=models.ExpressionWrapper(
+                    models.F("end") - models.F("start"),  # TODO: Set now if end is null
+                    output_field=models.DurationField(_("duration")),
+                ),
+            )
+        )
+
+
+class Pause(models.Model):
+    start = models.DateTimeField(_("start"), auto_now_add=True)
+    end = models.DateTimeField(_("end"), null=True, blank=True)
+    timer = models.ForeignKey(
+        "Timer",
+        models.CASCADE,
+        related_name="pauses",
+        verbose_name=_("timer"),
+    )
+
+    objects = PauseManager()
 
     def __str__(self):
         return str(self.start)
