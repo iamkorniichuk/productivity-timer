@@ -2,8 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.functions import NonAggregateCount
-from commons.models import ShowAnnotationAfterCreateMixin
+from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 
 from users.models import User
 from themes.models import Theme
@@ -49,7 +48,7 @@ class TaskManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 all_completed_timers=models.ExpressionWrapper(
                     models.Subquery(
                         all_related_completed_timers.annotate(
-                            count=NonAggregateCount("pk")
+                            count=remove_aggregation(models.Count("pk"))
                         ).values("count")[:1]
                     ),
                     output_field=models.PositiveIntegerField(_("all completed timers")),
@@ -57,7 +56,7 @@ class TaskManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 current_completed_timers=models.ExpressionWrapper(
                     models.Subquery(
                         current_related_completed_timers.annotate(
-                            count=NonAggregateCount("pk")
+                            count=remove_aggregation(models.Count("pk"))
                         ).values("count")[:1]
                     ),
                     output_field=models.PositiveIntegerField(

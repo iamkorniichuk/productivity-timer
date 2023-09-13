@@ -3,8 +3,7 @@ from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.functions import StartOf, EndOf
-from commons.models import ShowAnnotationAfterCreateMixin
+from commons.models import ShowAnnotationAfterCreateMixin, StartOf, EndOf
 
 
 class FrequencyManager(ShowAnnotationAfterCreateMixin, models.Manager):

@@ -3,16 +3,13 @@ from django.db.models.functions import Concat, Cast
 from django.db.models.lookups import Exact
 
 
-class NonAggregateSum(models.Sum):
-    """Doesn't aggregate rows, unlike built-in `Sum` function"""
-
-    contains_aggregate = False
-
-
-class NonAggregateCount(models.Count):
-    """Doesn't aggregate rows, unlike built-in `Count` function"""
-
-    contains_aggregate = False
+def remove_aggregation(instance: models.Func):
+    """
+    Set `contains_aggregate` of instance to `false`.
+    Therefore lets use aggregation `Func` in `Subquery`.
+    """
+    instance.contains_aggregate = False
+    return instance
 
 
 class TimeUnitToDuration(Cast):

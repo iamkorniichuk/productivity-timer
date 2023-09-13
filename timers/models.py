@@ -3,8 +3,7 @@ from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.models import ShowAnnotationAfterCreateMixin
-from commons.functions import NonAggregateSum
+from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 
 from users.models import User
 from tasks.models import Task
@@ -33,7 +32,7 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 pauses_duration=models.ExpressionWrapper(
                     models.Subquery(
                         all_ended_related_pauses.annotate(
-                            sum=NonAggregateSum("duration")
+                            sum=remove_aggregation(models.Sum("duration"))
                         ).values("sum")[:1]
                     ),
                     output_field=models.DurationField(_("pauses duration")),
