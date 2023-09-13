@@ -13,10 +13,11 @@ from .pause import Pause
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
-        all_ended_related_pauses = Pause.objects.filter(
+        # TODO: To refactor
+        all_related_pauses = Pause.objects.filter(
             timer=models.OuterRef("pk"),
-            is_ended=True,
         )
+        current_end = functions.Coalesce(models.F("end"), functions.Now())
 
         return (
             super()
@@ -33,7 +34,7 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 ),
                 pauses_duration=models.ExpressionWrapper(
                     models.Subquery(
-                        all_ended_related_pauses.annotate(
+                        all_related_pauses.annotate(
                             sum=remove_aggregation(models.Sum("duration"))
                         ).values("sum")[:1]
                     ),
@@ -41,7 +42,7 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                 ),
                 # TODO: To test
                 duration=models.ExpressionWrapper(
-                    models.F("end") - models.F("start") - models.F("pauses_duration"),
+                    current_end - models.F("start") - models.F("pauses_duration"),
                     output_field=models.DurationField(_("duration")),
                 ),
                 overflow_duration=models.ExpressionWrapper(

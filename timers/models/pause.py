@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import functions
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import ShowAnnotationAfterCreateMixin
@@ -6,6 +7,8 @@ from commons.models import ShowAnnotationAfterCreateMixin
 
 class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
+        current_end = functions.Coalesce(models.F("end"), functions.Now())
+
         return (
             super()
             .get_queryset()
@@ -15,7 +18,7 @@ class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
                     output_field=models.BooleanField(_("is ended")),
                 ),
                 duration=models.ExpressionWrapper(
-                    models.F("end") - models.F("start"),  # TODO: Set now if end is null
+                    current_end - models.F("start"),
                     output_field=models.DurationField(_("duration")),
                 ),
             )
