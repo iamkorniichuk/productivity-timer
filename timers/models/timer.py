@@ -8,6 +8,8 @@ from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 from users.models import User
 from tasks.models import Task
 
+from .pause import Pause
+
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
@@ -83,40 +85,6 @@ class Timer(models.Model):
 
     def get_absolute_url(self):
         return reverse("timers:detail", kwargs={"pk": self.pk})
-
-    def __str__(self):
-        return str(self.start)
-
-
-class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
-    def get_queryset(self):
-        return (
-            super()
-            .get_queryset()
-            .annotate(
-                is_ended=models.ExpressionWrapper(
-                    models.Q(end__isnull=False),
-                    output_field=models.BooleanField(_("is ended")),
-                ),
-                duration=models.ExpressionWrapper(
-                    models.F("end") - models.F("start"),  # TODO: Set now if end is null
-                    output_field=models.DurationField(_("duration")),
-                ),
-            )
-        )
-
-
-class Pause(models.Model):
-    start = models.DateTimeField(_("start"), auto_now_add=True)
-    end = models.DateTimeField(_("end"), null=True, blank=True)
-    timer = models.ForeignKey(
-        "Timer",
-        models.CASCADE,
-        related_name="pauses",
-        verbose_name=_("timer"),
-    )
-
-    objects = PauseManager()
 
     def __str__(self):
         return str(self.start)
