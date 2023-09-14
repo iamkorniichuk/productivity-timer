@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import timedelta
 
 from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 
@@ -13,7 +14,6 @@ from .pause import Pause
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
-        # TODO: To refactor
         all_related_pauses = Pause.objects.filter(
             timer=models.OuterRef("pk"),
         )
@@ -33,14 +33,16 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                     ),
                 ),
                 pauses_duration=models.ExpressionWrapper(
-                    models.Subquery(
-                        all_related_pauses.annotate(
-                            sum=remove_aggregation(models.Sum("duration"))
-                        ).values("sum")[:1]
+                    functions.Coalesce(
+                        models.Subquery(
+                            all_related_pauses.annotate(
+                                sum=remove_aggregation(models.Sum("duration"))
+                            ).values("sum")[:1]
+                        ),
+                        timedelta(),
                     ),
                     output_field=models.DurationField(_("pauses duration")),
                 ),
-                # TODO: To test
                 duration=models.ExpressionWrapper(
                     current_end - models.F("start") - models.F("pauses_duration"),
                     output_field=models.DurationField(_("duration")),
