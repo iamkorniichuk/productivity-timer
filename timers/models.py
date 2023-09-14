@@ -32,6 +32,10 @@ class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
                         _("datetime"),
                     ),
                 ),
+                is_paused=models.ExpressionWrapper(
+                    models.Exists(all_related_pauses.filter(is_ended=False)),
+                    output_field=models.BooleanField(_("is paused")),
+                ),
                 pauses_duration=models.ExpressionWrapper(
                     functions.Coalesce(
                         models.Subquery(
