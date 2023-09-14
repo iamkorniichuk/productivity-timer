@@ -28,6 +28,7 @@ urlpatterns = [
     path("tasks/", include("tasks.urls")),
     path("users/", include("users.urls")),
     path("themes/", include("themes.urls")),
+    path("pauses/", include("pauses.urls")),
     path(
         "schema<format>/",
         schema_view.without_ui(),

@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import functions
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import ShowAnnotationAfterCreateMixin
@@ -25,6 +26,7 @@ class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
         )
 
 
+# TODO: Add user?
 class Pause(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
@@ -36,6 +38,9 @@ class Pause(models.Model):
     )
 
     objects = PauseManager()
+
+    def get_absolute_url(self):
+        return reverse("pauses:detail", kwargs={"pk": self.pk})
 
     def __str__(self):
         return str(self.start)

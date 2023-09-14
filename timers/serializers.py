@@ -24,3 +24,7 @@ class TimerSerializer(
 
     user = USER_FIELD
     task = RepresentativePrimaryKeyRelatedField(serializer_class=NestedTaskSerializer)
+
+
+class NestedTimerSerializer(TimerSerializer):
+    user = None
