@@ -29,7 +29,7 @@ class Pause(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
     timer = models.ForeignKey(
-        "Timer",
+        "timers.Timer",
         models.CASCADE,
         related_name="pauses",
         verbose_name=_("timer"),

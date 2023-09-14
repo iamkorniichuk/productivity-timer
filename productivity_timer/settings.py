@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "djangorestframework_camel_case",
     "timers",
+    "pauses",
     "tasks",
     "schedules",
     "themes",

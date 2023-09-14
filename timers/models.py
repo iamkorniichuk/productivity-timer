@@ -9,7 +9,7 @@ from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 from users.models import User
 from tasks.models import Task
 
-from .pause import Pause
+from pauses.models import Pause
 
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
