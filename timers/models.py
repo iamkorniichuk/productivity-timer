@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.contenttypes.fields import GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import functions
 from django.urls import reverse
@@ -88,6 +89,7 @@ class Timer(models.Model):
         related_name="timers",
         verbose_name=_("user"),
     )
+    pauses = GenericRelation(Pause, related_query_name="timer")
 
     objects = TimerManager()
 

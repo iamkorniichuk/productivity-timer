@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.contenttypes.fields import GenericRelation
 from django.utils.translation import gettext_lazy as _
 
 from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
@@ -7,6 +8,7 @@ from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 from users.models import User
 from themes.models import Theme
 from schedules.models import Frequency
+from pauses.models import Pause
 
 
 class TaskManager(ShowAnnotationAfterCreateMixin, models.Manager):
@@ -115,6 +117,7 @@ class Task(models.Model):
         related_name="next_version",
         verbose_name=_("previous version"),
     )
+    pauses = GenericRelation(Pause, related_query_name="task")
 
     objects = TaskManager()
     current_version_objects = CurrentVersionTaskManager()
