@@ -81,8 +81,8 @@ class Task(models.Model):
     name = models.CharField(
         _("name"),
         max_length=64,
-        null=True,
         blank=True,
+        default="",
     )
     wanted_duration = models.DurationField(_("wanted duration"))
     theme = models.ForeignKey(
