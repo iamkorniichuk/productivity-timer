@@ -1,5 +1,7 @@
 from django.db import models
 from django.db.models import functions
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -30,12 +32,13 @@ class PauseManager(ShowAnnotationAfterCreateMixin, models.Manager):
 class Pause(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
-    timer = models.ForeignKey(
-        "timers.Timer",
+    content_type = models.ForeignKey(
+        ContentType,
         models.CASCADE,
-        related_name="pauses",
-        verbose_name=_("timer"),
+        limit_choices_to={"model__in": ["Timer", "Task"]},
     )
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
 
     objects = PauseManager()
 

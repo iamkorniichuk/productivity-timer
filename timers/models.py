@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -8,14 +9,14 @@ from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
 
 from users.models import User
 from tasks.models import Task
-
 from pauses.models import Pause
 
 
 class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
     def get_queryset(self):
         all_related_pauses = Pause.objects.filter(
-            timer=models.OuterRef("pk"),
+            content_type=ContentType.objects.get_for_model(self.model),
+            object_id=models.OuterRef("pk"),
         )
         current_end = functions.Coalesce(models.F("end"), functions.Now())
 
