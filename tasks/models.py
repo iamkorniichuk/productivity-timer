@@ -2,14 +2,14 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
+from commons.models import remove_aggregation
 
 from users.models import User
 from themes.models import Theme
 from schedules.models import Frequency
 
 
-class TaskManager(ShowAnnotationAfterCreateMixin, models.Manager):
+class TaskManager(models.Manager):
     def get_queryset(self):
         from timers.models import Timer
 

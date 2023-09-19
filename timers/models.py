@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import timedelta
 
-from commons.models import ShowAnnotationAfterCreateMixin, remove_aggregation
+from commons.models import remove_aggregation
 
 from users.models import User
 from tasks.models import Task
@@ -12,7 +12,7 @@ from tasks.models import Task
 from pauses.models import Pause
 
 
-class TimerManager(ShowAnnotationAfterCreateMixin, models.Manager):
+class TimerManager(models.Manager):
     def get_queryset(self):
         all_related_pauses = Pause.objects.filter(
             timer=models.OuterRef("pk"),

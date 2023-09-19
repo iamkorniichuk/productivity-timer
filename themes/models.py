@@ -2,12 +2,10 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.models import ShowAnnotationAfterCreateMixin
-
 from users.models import User
 
 
-class ThemeManager(ShowAnnotationAfterCreateMixin, models.Manager):
+class ThemeManager(models.Manager):
     def get_queryset(self):
         return (
             super()

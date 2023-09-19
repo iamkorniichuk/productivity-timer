@@ -4,12 +4,10 @@ from .functions import (
     StartOf,
     EndOf,
 )
-from .mixins import ShowAnnotationAfterCreateMixin
 
 __all__ = [
     "remove_aggregation",
     "TimeUnitToDuration",
     "StartOf",
     "EndOf",
-    "ShowAnnotationAfterCreateMixin",
 ]

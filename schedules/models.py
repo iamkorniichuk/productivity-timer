@@ -3,10 +3,10 @@ from django.db.models import functions
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from commons.models import ShowAnnotationAfterCreateMixin, StartOf, EndOf
+from commons.models import StartOf, EndOf
 
 
-class FrequencyManager(ShowAnnotationAfterCreateMixin, models.Manager):
+class FrequencyManager(models.Manager):
     def get_queryset(self):
         return (
             super()

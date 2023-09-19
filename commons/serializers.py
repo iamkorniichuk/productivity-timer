@@ -8,36 +8,6 @@ class CurrentUserDefault:
         return instance.context["request"].user
 
 
-class SerializeAnnotationsMixin:
-    """
-    Implicitly adds manager's annotations. Calls to db once to retrieve all annotation fields.
-
-    Override `queryset` or `.get_queryset()` to set source of annotations different from default model's manager.
-    """
-
-    queryset = None
-
-    def get_fields(self):
-        fields = super().get_fields()
-        for name, annotation in self.get_annotations().items():
-            fields[name] = self.create_field(annotation)
-        return fields
-
-    def create_field(self, annotation):
-        serializer_class = self.serializer_field_mapping[
-            annotation.output_field.__class__
-        ]
-        return serializer_class(required=False, read_only=True)
-
-    def get_queryset(self):
-        return self.queryset or self.Meta.model._default_manager.all()
-
-    def get_annotations(self):
-        if not hasattr(self, "annotations"):
-            self.annotations = self.get_queryset()._query.annotations
-        return self.annotations
-
-
 class SerializeUrlMixin:
     """
     Populates serializer with URL field.

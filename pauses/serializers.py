@@ -1,8 +1,8 @@
 from rest_framework import serializers
+from drf_annotations.mixins import SerializeAnnotationsMixin
 
 from commons.serializers import (
     RepresentativePrimaryKeyRelatedField,
-    SerializeAnnotationsMixin,
     SerializeUrlMixin,
 )
 

@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from rest_framework_recursive.fields import RecursiveField
+from drf_annotations.mixins import SerializeAnnotationsMixin
 
 from commons.serializers import (
     RepresentativePrimaryKeyRelatedField,
-    SerializeAnnotationsMixin,
     SerializeUrlMixin,
 )
 from commons.utils import model_to_data

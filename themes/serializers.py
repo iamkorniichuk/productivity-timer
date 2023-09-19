@@ -1,7 +1,8 @@
 from rest_framework_recursive.fields import RecursiveField
 from rest_framework import serializers
+from drf_annotations.mixins import SerializeAnnotationsMixin
 
-from commons.serializers import SerializeAnnotationsMixin, SerializeUrlMixin
+from commons.serializers import SerializeUrlMixin
 
 from users.serializers import USER_FIELD
 
