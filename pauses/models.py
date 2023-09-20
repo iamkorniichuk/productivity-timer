@@ -1,5 +1,8 @@
+from collections.abc import Iterable
 from django.db import models
 from django.db.models import functions
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -28,14 +31,20 @@ class PauseManager(models.Manager):
 class Pause(models.Model):
     start = models.DateTimeField(_("start"), auto_now_add=True)
     end = models.DateTimeField(_("end"), null=True, blank=True)
-    timer = models.ForeignKey(
-        "timers.Timer",
+    content_type = models.ForeignKey(
+        ContentType,
         models.CASCADE,
-        related_name="pauses",
-        verbose_name=_("timer"),
+        limit_choices_to=models.Q(app_label="timers", model="timer")
+        | models.Q(app_label="tasks", model="task"),
     )
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
 
     objects = PauseManager()
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("pauses:detail", kwargs={"pk": self.pk})
